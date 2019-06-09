@@ -12,7 +12,7 @@ import os
 import random as rn
 from keras import backend as K
 
-n = 8
+n = 2
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 np.random.seed(100 * n)
 rn.seed(10000 * n)
@@ -77,7 +77,7 @@ y_test = test_target.values.astype('float32')
 
 hidden = 64
 batch_size = 20
-epochs = 25
+epochs = 17
 
 model = Sequential()
 model.add(Bidirectional(LSTM(hidden), input_shape=(lag + 3, num_features)))
@@ -118,13 +118,14 @@ y_predict = model.predict(X_test)
 
 #model.save_weights(name+'_'+str(epochs)+'.h5')
 
-'''
+plt.figure(figsize=(20, 10))
 plt.plot(y_test, color='black', linewidth=.2, marker='o', markersize=1.4,
             markeredgecolor='black', markeredgewidth=0.2, fillstyle='none')
 plt.plot(y_predict, color='red', linewidth=0.5, linestyle=' ', marker='o', markersize=1.4,
             markeredgecolor='red', markeredgewidth=.2, fillstyle='none')
+plt.legend(('Test Data', 'Predictions'))
+plt.savefig(name+".png", dpi = 600)
 plt.show()
-'''
 '''
 plt.plot(y_test)
 plt.plot(y_predict, color='red')
