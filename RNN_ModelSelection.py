@@ -12,7 +12,7 @@ import os
 import random as rn
 from keras import backend as K
 
-n = 1
+n = 8
 os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 np.random.seed(100 * n)
 rn.seed(10000 * n)
@@ -46,7 +46,7 @@ series = series.replace('^\s*$', np.nan, regex=True)
 series = series.fillna(method='ffill')
 series = series.apply(to_numeric)
 lag = 4
-num_features = 8
+num_features = 9
 
 series_normalized = (series - np.mean(series)) / np.std(series)
 # series_normalized = (series - np.min(series))/(np.max(series)-np.min(series))
@@ -60,9 +60,9 @@ for i in range(4, 7):
         X[c + '_' + str(i)] = 0
 Y = table2lags(BOD5, lag + 2)
 for i, c in zip(range(0, 7), Y.columns):
-    X.insert(8 * i, c, Y.iloc[:, i])
+    X.insert(9 * i, c, Y.iloc[:, i])
 
-name = 'NH3_0'
+name = 'PRCP_NOOA_0'
 size = int(len(X) * 0.8)
 train, test = X[0:size], X[size:len(X)]
 test_target = test[name]
@@ -77,11 +77,12 @@ y_test = test_target.values.astype('float32')
 
 hidden = 64
 batch_size = 20
-epochs = 20
+epochs = 25
 
 model = Sequential()
 model.add(Bidirectional(LSTM(hidden), input_shape=(lag + 3, num_features)))
-#model.add(SimpleRNN(hidden))
+# model.add(LSTM(hidden, input_shape=(lag + 3, num_features)))
+# model.add(SimpleRNN(hidden))
 model.add(Dense(1))
 
 
